@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- MALA PRACTICA DECLARAR SCRIPTS EN EL HEAD -->
+    <!-- <script src="./assets/js/app.js" type="module"></script> -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Enlazar hoja de estilos -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <title>Orden y Lugar en Importaciones</title>
+</head>
+
+<body>
+    <h1>Hola Mundo!</h1>
+    <hr>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur reiciendis voluptate dolores cumque velit
+        laudantium dignissimos beatae placeat sint, alias repellendus nostrum reprehenderit sequi facilis vero eligendi,
+        sit esse officiis!</p>
+
+    <!-- Primero enlazo el script que declara las variables y luego el script que las usa. -->
+    <script src="./assets/js/app.js" type="module"></script>
+    <!-- porque si lo hago al reves, el script que las usa no encontrará las variables declaradas en el otro script. -->
+    <script src="assets/js/alerts.js"></script>
+</body>
+
+</html>
+
+
+<!-- * Notaciones de importación:
+- Debemos importar bien el PATH (la ruta del archivo) para que no haya errores.
+
+* Scripts:
+- Los scripts siempre (es muy recomendable) se colocan al final del body para que no bloqueen la carga de la página.
+porque así primero carga el HTML y luego nuestro script, sino la página podría
+dar una sensación de que es lenta o que no carga bien. -->
