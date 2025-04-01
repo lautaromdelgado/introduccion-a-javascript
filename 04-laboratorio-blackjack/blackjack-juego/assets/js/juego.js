@@ -74,7 +74,6 @@ pedirCarta(); // Pedir una carta del deck
 btnPedir.addEventListener('click', () => {
     const carta = pedirCarta(); // Pedir una carta del deck
     puntosJugador = puntosJugador + valorCarta(carta); // Obtener el valor de la carta
-    console.log({ puntosJugador }); // Mostrar el valor de la carta en la consola
     puntosHTML[0].innerText = puntosJugador; // Mostrar el valor de la carta en el HTML
 
     // Aparecer cartas
@@ -102,7 +101,6 @@ const turnoComputadora = (puntosMinimos) => {
     do {
         const carta = pedirCarta(); // Pedir una carta del deck
         puntosComputadora = puntosComputadora + valorCarta(carta); // Obtener el valor de la carta
-        console.log({ puntosComputadora }); // Mostrar el valor de la carta en la consola
         puntosHTML[1].innerText = puntosComputadora; // Mostrar el valor de la carta en el HTML
 
         // Aparecer cartas
@@ -116,9 +114,24 @@ const turnoComputadora = (puntosMinimos) => {
             break; // Rompemos el ciclo
         }
     } while ((puntosComputadora < puntosMinimos) && (puntosMinimos <= 21));
+
+    // Implementación para que espere 1 segundo antes de mostrar el resultado
+    // Esto permitira que se muestren las cartas en el frontend
+    setTimeout(() => {
+        if (puntosComputadora === puntosMinimos) {
+            alert('Nadie gana!'); // Si los puntos son iguales, nadie gana
+        } else if (puntosMinimos > 21) {
+            alert('Computadora gana!'); // Si el jugador se pasó de 21, la computadora gana
+        } else if (puntosComputadora > 21) {
+            alert('El jugador gana!'); // El jugador gana la mano
+        } else {
+            alert('Computadora gana!'); // La computadora gana la mano
+        }
+    }, 30); // Esperar 3 segundo antes de mostrar el resultado
+
 }
 
-// Detener el juego
+// Botón detener el juego
 btnDetener.addEventListener('click', () => {
     btnPedir.disabled = true; // Deshabilitar el botón de pedir carta
     btnDetener.disabled = true; // Deshabilitar el botón de detener el juego
@@ -126,9 +139,14 @@ btnDetener.addEventListener('click', () => {
     turnoComputadora(puntosJugador); // Pasar los puntos del jugador a la computadora
 });
 
-// Nuevo juego
+// Botón nuevo juego
 btnNuevo.addEventListener('click', () => {
-    deck = []; // Reinicar el deck
+    // Eliminar los elementos del HTML
+    const cartas = document.querySelectorAll('.carta'); // Obtener todas las cartas del HTML
+    cartas.forEach(carta => carta.remove()); // Eliminar las cartas del HTML
+
+    // Manejar el mazo de cartas
+    deck = []; // Reiniciar el deck de cartas
     deck = crearDeck(); // Crear un nuevo deck
     puntosJugador = 0; // Reiniciar los puntos del jugador
     puntosComputadora = 0; // Reiniciar los puntos de la computadora
