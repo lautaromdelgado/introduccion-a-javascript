@@ -9,6 +9,18 @@
 let deck = [];
 let tipos = ['C', 'D', 'H', 'S'];
 let especiales = ['A', 'J', 'Q', 'K'];
+let puntosJugador = 0;
+let puntosComputadora = 0;
+
+//* Referencias del HTML
+const btnPedir = document.querySelector('#btnPedir'); // Botón para pedir carta
+const btnDetener = document.querySelector('#btnDetener'); // Botón para detener el juego
+const btnNuevo = document.querySelector('#btnNuevo'); // Botón para iniciar un nuevo juego
+
+const divJugador = document.querySelector('#jugador-cartas'); // Div para mostrar las cartas del jugador
+const divComputadora = document.querySelector('#computadora-cartas'); // Div para mostrar las cartas del jugador
+
+const puntosHTML = document.querySelectorAll('small'); // Obtener todos los elementos <small> del HTML
 
 // Crear un nuevo deck de cartas
 const crearDeck = () => {
@@ -29,8 +41,7 @@ const crearDeck = () => {
     }
 
     deck = _.shuffle(deck); // Mezclar el deck de cartas
-    console.log(deck); // Mostrar el deck de cartas mezclado en la consola
-
+    console.log
     return deck; // Retornar el deck de cartas
 }
 
@@ -40,7 +51,6 @@ const pedirCarta = () => {
         throw 'No hay cartas en el deck'; // Lanzar un error si no hay cartas en el deck
     }
     const cartaElegida = deck.pop(); // Sacar la última carta del deck
-    console.log(deck); // Mostrar el deck de cartas restante en la consola
     return cartaElegida; // Retornar la carta elegida
 }
 
@@ -60,5 +70,70 @@ crearDeck(); // Inicializar el juego
 
 pedirCarta(); // Pedir una carta del deck
 
-const punto = valorCarta(pedirCarta()); // Obtener el valor de la carta
-console.log({ punto }); // Mostrar el valor de la carta en la consola
+//* Eventos
+btnPedir.addEventListener('click', () => {
+    const carta = pedirCarta(); // Pedir una carta del deck
+    puntosJugador = puntosJugador + valorCarta(carta); // Obtener el valor de la carta
+    console.log({ puntosJugador }); // Mostrar el valor de la carta en la consola
+    puntosHTML[0].innerText = puntosJugador; // Mostrar el valor de la carta en el HTML
+
+    // Aparecer cartas
+    const imgCarta = document.createElement('img'); // Crear un elemento <img> para mostrar la carta
+    imgCarta.src = `assets/cartas/${carta}.png`; // Mostrar la carta en el HTML
+    imgCarta.classList.add('carta'); // Agregar la clase carta al elemento <img>
+    divJugador.append(imgCarta); // Agregar la carta al div del jugador
+
+    // Lógica para manejar que el jugador perdio.
+    if (puntosJugador > 21) {
+        btnPedir.disabled = true; // Deshabilitar el botón de pedir carta
+        btnDetener.disabled = true; // Deshabilitar el botón de detener el juego
+        // Llama al turno de la computadora
+        turnoComputadora(puntosJugador); // Pasar los puntos del jugador a la computadora
+    } else if (puntosJugador === 21) {
+        btnPedir.disabled = true; // Deshabilitar el botón de pedir carta
+        btnDetener.disabled = true; // Deshabilitar el botón de detener el juego
+        // Llama al turno de la computadora
+        turnoComputadora(puntosJugador); // Pasar los puntos del jugador a la computadora
+    }
+});
+
+//* De la computadoracurrículum vitae
+const turnoComputadora = (puntosMinimos) => {
+    do {
+        const carta = pedirCarta(); // Pedir una carta del deck
+        puntosComputadora = puntosComputadora + valorCarta(carta); // Obtener el valor de la carta
+        console.log({ puntosComputadora }); // Mostrar el valor de la carta en la consola
+        puntosHTML[1].innerText = puntosComputadora; // Mostrar el valor de la carta en el HTML
+
+        // Aparecer cartas
+        const imgCarta = document.createElement('img'); // Crear un elemento <img> para mostrar la carta
+        imgCarta.src = `assets/cartas/${carta}.png`; // Mostrar la carta en el HTML
+        imgCarta.classList.add('carta'); // Agregar la clase carta al elemento <img>
+        divComputadora.append(imgCarta); // Agregar la carta al div del jugador
+
+        // Si el jugador se pasó de 21, la computadora gana automáticamente
+        if (puntosMinimos > 21) {
+            break; // Rompemos el ciclo
+        }
+    } while ((puntosComputadora < puntosMinimos) && (puntosMinimos <= 21));
+}
+
+// Detener el juego
+btnDetener.addEventListener('click', () => {
+    btnPedir.disabled = true; // Deshabilitar el botón de pedir carta
+    btnDetener.disabled = true; // Deshabilitar el botón de detener el juego
+    // Llama al turno de la computadora
+    turnoComputadora(puntosJugador); // Pasar los puntos del jugador a la computadora
+});
+
+// Nuevo juego
+btnNuevo.addEventListener('click', () => {
+    deck = []; // Reinicar el deck
+    deck = crearDeck(); // Crear un nuevo deck
+    puntosJugador = 0; // Reiniciar los puntos del jugador
+    puntosComputadora = 0; // Reiniciar los puntos de la computadora
+    puntosHTML[0].innerText = 0; // Reiniciar los puntos del jugador en el HTML
+    puntosHTML[1].innerText = 0; // Reiniciar los puntos de la computadora en el HTML
+    btnPedir.disabled = false; // Habilitar el botón de pedir carta
+    btnDetener.disabled = false; // Habilitar el botón de detener el juego
+})
